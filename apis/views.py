@@ -1317,21 +1317,24 @@ def getTests(request):
         utestS = TestSerializer(utests,many=True)
         presentTest=Test.objects.filter(test_start__lt= d,test_end__gt=d,live__in=[True])
         bb=[]
-        if presentTest.exists():
-            b={}
-            b['id'] = presentTest[0].id
-            b['name']=presentTest[0].test_name
-            b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
-            b['start'] = converttoist(b['start'])
-            b['start']=b['start'][0]
-            dicTime=durationBtwnDates(presentTest[0].test_start,presentTest[0].test_end)
-            b['duration']=dicTime['duration']
-            b['totalTestTime']=presentTest[0].totalTestTime
-            b['endDate']="{0} {1}".format(presentTest[0].test_end.date(),str(presentTest[0].test_end.time()).split('.')[0])
-            b['endDate'] = converttoist(b['endDate'])
-            b['endDate']=b['endDate'][0]
-            b['ends_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(presentTest[0].test_end.year,presentTest[0].test_end.month,presentTest[0].test_end.day,presentTest[0].test_end.hour,presentTest[0].test_end.minute,presentTest[0].test_end.second))['total_seconds']
-            bb.append(b)
+        try:
+            if presentTest.exists():
+                b={}
+                b['id'] = presentTest[0].id
+                b['name']=presentTest[0].test_name
+                b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
+                b['start'] = converttoist(b['start'])
+                b['start']=b['start'][0]
+                dicTime=durationBtwnDates(presentTest[0].test_start,presentTest[0].test_end)
+                b['duration']=dicTime['duration']
+                b['totalTestTime']=presentTest[0].totalTestTime
+                b['endDate']="{0} {1}".format(presentTest[0].test_end.date(),str(presentTest[0].test_end.time()).split('.')[0])
+                b['endDate'] = converttoist(b['endDate'])
+                b['endDate']=b['endDate'][0]
+                b['ends_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(presentTest[0].test_end.year,presentTest[0].test_end.month,presentTest[0].test_end.day,presentTest[0].test_end.hour,presentTest[0].test_end.minute,presentTest[0].test_end.second))['total_seconds']
+                bb.append(b)
+        except Exception as e:
+            print(e)
         cc=[]
         for x in utests:
             c={}
