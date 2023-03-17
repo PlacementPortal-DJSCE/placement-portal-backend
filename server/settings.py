@@ -18,7 +18,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost:3000","localhost",os.environ.get("FRONT_END_LINK")]
+ALLOWED_HOSTS = ["*"]
+#ALLOWED_HOSTS = ["http://localhost:3000/",os.environ.get("FRONT_END_LINK")]
 
 
 # Application definition
