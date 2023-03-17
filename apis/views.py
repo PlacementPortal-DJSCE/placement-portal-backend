@@ -319,7 +319,8 @@ def forgotpass(request):
                 msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
                 args={}
                 args['name']='{}'.format(user[0].first_name)
-                args['url']='https://placement-portal-test.netlify.app/change-pass?token={0}&user={1}'.format(token,user[0].email)
+                args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+                args['url']='{0}/change-pass?token={1}&user={2}'.format(os.environ.get("FRONT_END_LINK"),token,user[0].email)
                 html_template=get_template("api/ChangePassword.html").render(args)
                 msg.attach_alternative(html_template,"text/html")
                 msg.send()
@@ -421,6 +422,7 @@ def send_custom_mail(request):
             msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
             args={}
             args["body"]=data["body"]
+            args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
             html_template=get_template("api/CustomMail.html").render(args)
             msg.attach_alternative(html_template,"text/html")
             msg.send()
@@ -453,6 +455,8 @@ def permission(request):
             args['Start']='{}'.format(converttoist(testx.test_start)[0] )
             args['End']='{}'.format(converttoist(testx.test_end)[0])
             args['testName']='{}'.format(testx.test_name)
+            args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+            args["url"]='{}/login'.format(os.environ.get("FRONT_END_LINK"))
             html_template=get_template("api/Permission.html").render(args)
             msg.attach_alternative(html_template,"text/html")
             msg.send()
@@ -941,7 +945,8 @@ def marks(request,sid=0):
                             args['test_name']='{}'.format(test.test_name)
                             # args['test_start']='{}'.format(test.test_start)
                             # args['test_end']='{}'.format(test.test_end)
-                            args['url']='https://placement-portal-test.netlify.app/viewresult?viewToken={0}&user={1}&viewRes={2}&testId={3}'.format(token,user.email,True,test.id)
+                            args['url']='{0}/viewresult?viewToken={1}&user={2}&viewRes={3}&testId={4}'.format(os.environ.get("FRONT_END_LINK"),token,user.email,True,test.id)
+                            args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
                             html_template=get_template("api/Result.html").render(args)
                             msg.attach_alternative(html_template,"text/html")
                             msg.send()
@@ -1235,7 +1240,7 @@ def sendMailAdmin(request):
             if user.exists():
                 return JsonResponse({'statuscode':0,'msg':'Email already exists'},safe=False)
             else: 
-                user=User(email=data['email'],username=data['email'],password=make_password('pass@123'),is_staff=True,is_superuser=bool(data['superuser']))                
+                user=User(email=data['email'],username=data['email'],password=make_password(os.environ.get("STUDENT_DEFAULT_PASS")),is_staff=True,is_superuser=bool(data['superuser']))                
                 recipient_list = [data['email']]
                 subject = "Admin register"
                 email_from = settings.EMAIL_HOST_USER
@@ -1243,8 +1248,9 @@ def sendMailAdmin(request):
                 msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
                 args={}
                 args['name']='{}'.format(data['email'])
-                args['url']='https://placement-portal-test.netlify.app/login'
-                args['password']='{}'.format('pass@123')
+                args['url']='{0}/login'.format(os.environ.get("FRONT_END_LINK"))
+                args['password']='{}'.format(os.environ.get("STUDENT_DEFAULT_PASS"))
+                args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
                 html_template=get_template("api/AdminRegister.html").render(args)
                 msg.attach_alternative(html_template,"text/html")
 
@@ -1320,24 +1326,21 @@ def getTests(request):
         utestS = TestSerializer(utests,many=True)
         presentTest=Test.objects.filter(test_start__lt= d,test_end__gt=d,live__in=[True])
         bb=[]
-        try:
-            if presentTest.exists():
-                b={}
-                b['id'] = presentTest[0].id
-                b['name']=presentTest[0].test_name
-                b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
-                b['start'] = converttoist(b['start'])
-                b['start']=b['start'][0]
-                dicTime=durationBtwnDates(presentTest[0].test_start,presentTest[0].test_end)
-                b['duration']=dicTime['duration']
-                b['totalTestTime']=presentTest[0].totalTestTime
-                b['endDate']="{0} {1}".format(presentTest[0].test_end.date(),str(presentTest[0].test_end.time()).split('.')[0])
-                b['endDate'] = converttoist(b['endDate'])
-                b['endDate']=b['endDate'][0]
-                b['ends_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(presentTest[0].test_end.year,presentTest[0].test_end.month,presentTest[0].test_end.day,presentTest[0].test_end.hour,presentTest[0].test_end.minute,presentTest[0].test_end.second))['total_seconds']
-                bb.append(b)
-        except Exception as e:
-            print(e)
+        if presentTest.exists():
+            b={}
+            b['id'] = presentTest[0].id
+            b['name']=presentTest[0].test_name
+            b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
+            b['start'] = converttoist(b['start'])
+            b['start']=b['start'][0]
+            dicTime=durationBtwnDates(presentTest[0].test_start,presentTest[0].test_end)
+            b['duration']=dicTime['duration']
+            b['totalTestTime']=presentTest[0].totalTestTime
+            b['endDate']="{0} {1}".format(presentTest[0].test_end.date(),str(presentTest[0].test_end.time()).split('.')[0])
+            b['endDate'] = converttoist(b['endDate'])
+            b['endDate']=b['endDate'][0]
+            b['ends_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(presentTest[0].test_end.year,presentTest[0].test_end.month,presentTest[0].test_end.day,presentTest[0].test_end.hour,presentTest[0].test_end.minute,presentTest[0].test_end.second))['total_seconds']
+            bb.append(b)
         cc=[]
         for x in utests:
             c={}

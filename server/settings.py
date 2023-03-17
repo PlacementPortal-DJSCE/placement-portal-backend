@@ -18,7 +18,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost:3000","localhost",os.environ.get("FRONT_END_LINK")]
 
 
 # Application definition
@@ -122,8 +122,8 @@ MEDIA_URL = 'media/'
 
 CSRF_COOKIE_NAME = "csrftoken"
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = []
-CORS_ORIGIN_WHITELIST=[]
+CSRF_TRUSTED_ORIGINS = [os.environ.get('CORS_CSRF_TRUSTED_ORIGIN')]
+CORS_ORIGIN_WHITELIST=[os.environ.get('CORS_CSRF_TRUSTED_ORIGIN')]
 REST_FRAMEWORK={
     'DEFAULT_PERMISSION_CLASSES':[
         'rest_framework.permissions.IsAuthenticated',
