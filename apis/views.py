@@ -423,6 +423,7 @@ def send_custom_mail(request):
             args={}
             args["body"]=data["body"]
             args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+            args["url"]='{}'.format(os.environ.get("FRONT_END_LINK"))
             html_template=get_template("api/CustomMail.html").render(args)
             msg.attach_alternative(html_template,"text/html")
             msg.send()
