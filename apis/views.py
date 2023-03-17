@@ -320,6 +320,7 @@ def forgotpass(request):
                 args={}
                 args['name']='{}'.format(user[0].first_name)
                 args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+                args["mail"]=os.environ.get("EMAIL_HOST_USER")
                 args['url']='{0}/change-pass?token={1}&user={2}'.format(os.environ.get("FRONT_END_LINK"),token,user[0].email)
                 html_template=get_template("api/ChangePassword.html").render(args)
                 msg.attach_alternative(html_template,"text/html")
@@ -423,6 +424,7 @@ def send_custom_mail(request):
             args={}
             args["body"]=data["body"]
             args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+            args["mail"]=os.environ.get("EMAIL_HOST_USER")
             args["url"]='{}'.format(os.environ.get("FRONT_END_LINK"))
             html_template=get_template("api/CustomMail.html").render(args)
             msg.attach_alternative(html_template,"text/html")
@@ -457,6 +459,7 @@ def permission(request):
             args['End']='{}'.format(converttoist(testx.test_end)[0])
             args['testName']='{}'.format(testx.test_name)
             args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
+            args["mail"]=os.environ.get("EMAIL_HOST_USER")
             args["url"]='{}/login'.format(os.environ.get("FRONT_END_LINK"))
             html_template=get_template("api/Permission.html").render(args)
             msg.attach_alternative(html_template,"text/html")
@@ -946,6 +949,7 @@ def marks(request,sid=0):
                             args['test_name']='{}'.format(test.test_name)
                             # args['test_start']='{}'.format(test.test_start)
                             # args['test_end']='{}'.format(test.test_end)
+                            args["mail"]=os.environ.get("EMAIL_HOST_USER")
                             args['url']='{0}/viewresult?viewToken={1}&user={2}&viewRes={3}&testId={4}'.format(os.environ.get("FRONT_END_LINK"),token,user.email,True,test.id)
                             args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
                             html_template=get_template("api/Result.html").render(args)
@@ -1249,6 +1253,7 @@ def sendMailAdmin(request):
                 msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
                 args={}
                 args['name']='{}'.format(data['email'])
+                args["mail"]=os.environ.get("EMAIL_HOST_USER")
                 args['url']='{0}/login'.format(os.environ.get("FRONT_END_LINK"))
                 args['password']='{}'.format(os.environ.get("STUDENT_DEFAULT_PASS"))
                 args['dj_logo']='{}'.format(os.environ.get("DJ_LOGO"))
