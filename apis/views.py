@@ -1354,6 +1354,7 @@ def getTests(request):
             c['start']="{0} {1}".format(x.test_start.date(),x.test_start.time())
             c['start'] = converttoist(c['start'])
             c['start']=c['start'][0]
+            c['totalTestTime']=x.totalTestTime
             dicTime=durationBtwnDates(x.test_start,x.test_end)
             c['duration']=dicTime['duration']
             c['starts_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(x.test_start.year,x.test_start.month,x.test_start.day,x.test_start.hour,x.test_start.minute,x.test_start.second))['total_seconds']
